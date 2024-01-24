@@ -10,6 +10,7 @@ public class enemyAIPatrol : MonoBehaviour
     float timer = 0;
     GameObject player;
     NavMeshAgent agent;
+    public GameObject dialogue;
     [SerializeField] trigger Trigger;
     [SerializeField] LayerMask groundLayer, playerLayer;
     [SerializeField] float chaseSpeed = 5f;
@@ -37,10 +38,10 @@ public class enemyAIPatrol : MonoBehaviour
         Trigger = Trigger.GetComponent<trigger>();
         
         enemyCollider = GetComponent<BoxCollider>();
-            if (Trigger == null)
-    {
-        Debug.LogError("Trigger component not found. Make sure the object has a 'trigger' component.");
-    }
+        if (Trigger == null)
+        {
+            Debug.LogError("Trigger component not found. Make sure the object has a 'trigger' component.");
+        }
     }
 
     // Update is called once per frame
@@ -48,6 +49,7 @@ public class enemyAIPatrol : MonoBehaviour
     {
         start = Trigger.chaseInitialize; // Trigger for the enemy to start chasing player
         if(start == true){
+            dialogue.SetActive(false);
 
             Vector3 toPlayer = player.transform.position - transform.position; // enemy going toward player position
             float angleToPlayer = Vector3.Angle(transform.forward, toPlayer);

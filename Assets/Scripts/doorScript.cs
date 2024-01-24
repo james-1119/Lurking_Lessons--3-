@@ -7,14 +7,18 @@ using TMPro;
 public class doorScript : MonoBehaviour
 {
     public float interactionDistance; // Ray interaction distance
-    public GameObject game; 
+    public GameObject game1; 
+    public GameObject game2; 
+    public NPCSystem NPCSystem;
     private Inventory keyPicked; // Access global variable from inventory class
     public string doorOpenAnimationName, doorCloseAnimationName; // initializing the two animation
     public TextMeshProUGUI intText;
     public enemyAIPatrol enemyAI;
+    public Collider other;
 
     void Start(){
-        keyPicked = game.GetComponent<Inventory>();
+        keyPicked = game1.GetComponent<Inventory>();
+        NPCSystem = game2.GetComponent<NPCSystem>();
     }
 
     void Update(){
@@ -74,7 +78,7 @@ public class doorScript : MonoBehaviour
                     intText.SetText("Press [Q] to enter hiding place"); // display this when the the player is not in the locker
                 }
             }
-        } else {
+        } else if (!Physics.Raycast(ray, out hit, interactionDistance)){
             intText.SetText("");
             
         }

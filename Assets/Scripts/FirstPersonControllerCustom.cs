@@ -17,6 +17,7 @@ public class FirstPersonControllerCustom : MonoBehaviour
     public bool canHide = false;
     public float lookSpeed = 2.0f; // camera turning speed and distance
     public float lookXLimit = 45.0f;
+    public bool dialogue = false;
     public StaminaController _staminaController; // call stamina control class
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero; // player position, x, y, z
@@ -62,6 +63,28 @@ public class FirstPersonControllerCustom : MonoBehaviour
             Cursor.visible = true;
             SceneManager.LoadScene("EscapeScene");
         }
+        if (other.name.Contains("hideCollision")){
+            if(other.name.Contains("1")){
+                Debug.Log("1");
+                inventory.lockerTarget = inventory.locker1.transform;
+            }
+            if(other.name.Contains("2")){
+                Debug.Log("2");
+                inventory.lockerTarget = inventory.locker2.transform;
+            }
+            if(other.name.Contains("3")){
+                Debug.Log("3");
+                inventory.lockerTarget = inventory.locker3.transform;
+            }
+            if(other.name.Contains("4")){
+                Debug.Log("4");
+                inventory.lockerTarget = inventory.locker4.transform;
+            }
+            if(other.name.Contains("5")){
+                Debug.Log("5");
+                inventory.lockerTarget = inventory.locker5.transform;
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other){ // Player can not hide after leaving the hide place collider box
@@ -72,7 +95,7 @@ public class FirstPersonControllerCustom : MonoBehaviour
 
     void Update()
     {  
-
+        if(!dialogue){
 
         // We are grounded, so recalculate move direction based on axes
         Vector3 forward = transform.TransformDirection(Vector3.forward);
@@ -141,7 +164,7 @@ public class FirstPersonControllerCustom : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
-
+        // play footstep audio when player is pressing wasd
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
         {
             audioSource.clip = walkingSound;
@@ -154,5 +177,6 @@ public class FirstPersonControllerCustom : MonoBehaviour
             audioSource.Stop();
         }
 
+    }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,9 @@ public class Inventory : MonoBehaviour
     public GameObject Player;
     public enemyAIPatrol enemyAI;
     public doorScript doorScript;
-    [SerializeField] Transform lockerTarget;
+    public Transform lockerTarget;
+    public PauseMenu pauseMenu;
+    [SerializeField] public GameObject locker1, locker2, locker3, locker4, locker5;
 
     public FirstPersonControllerCustom firstPersonControllerCustom;
     private LimitedVisionEffect limitedVisionEffect;
@@ -33,6 +36,7 @@ public class Inventory : MonoBehaviour
     public bool key3Selected = false;
     public bool keySelected = false;
 
+bool moveAnim = false;
     public int barSelect = 0;
 
     public string slot = "";
@@ -40,6 +44,11 @@ public class Inventory : MonoBehaviour
     public string printSlot = "";
 
     [SerializeField] Animator myAnimationController;
+    [SerializeField] Animator lockerController;
+    [SerializeField] Animator lockerController1;
+    [SerializeField] Animator lockerController2;
+    [SerializeField] Animator lockerController3;
+    [SerializeField] Animator lockerController4;
 
     private void Start(){
         enemyAI = game2.GetComponent<enemyAIPatrol>();
@@ -173,21 +182,33 @@ public class Inventory : MonoBehaviour
                     enemyAI.playerInHidingPlace = true;
                     lockerCamera.enabled = true;
                     Player.SetActive(false);
-                    limitedVisionEffect.SetHidingState(true); // Set hiding state to true
-                    lockerCamera.transform.position = new Vector3(lockerTarget.position.x, lockerTarget.transform.position.y+2, lockerTarget.position.z); //Position locker camera to a different place
+                    lockerCamera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y+2.7f, Player.transform.position.z);
+                    moveAnim = true;//Position locker camera to a different place
                     doorScript.intText.SetText("Press [Q] to exit hiding place");
+                    lockerController.SetTrigger("lockerClose"); // reset the trigger for the animation
+                    lockerController1.SetTrigger("lockerClose");
+                    lockerController2.SetTrigger("lockerClose");
+                    lockerController3.SetTrigger("lockerClose");
+                    lockerController4.SetTrigger("lockerClose");
                 } else {
                     enemyAI.playerInHidingPlace = false;
                     Player.SetActive(true);
                     lockerCamera.enabled = false;
-                    limitedVisionEffect.SetHidingState(false); // Set hiding state to false
+                    lockerController.SetTrigger("lockerClose");
+                    lockerController1.SetTrigger("lockerClose");
+                    lockerController2.SetTrigger("lockerClose");
+                    lockerController3.SetTrigger("lockerClose");
+                    lockerController4.SetTrigger("lockerClose");
 
                 }
+            
                 
-        } else if (firstPersonControllerCustom.canHide != true){
+        } else if (firstPersonControllerCustom.canHide != true){ 
             enemyAI.playerInHidingPlace = false;
         }
-
+        if(moveAnim){ // slowly move player camera to locker camera
+            lockerCamera.transform.position = Vector3.MoveTowards(lockerCamera.transform.position, lockerTarget.transform.position, 4.0f*Time.deltaTime);
+        }
 
         Transform selectItem = transform.Find(slot);
         previousSelection = slot;
@@ -203,6 +224,11 @@ public class Inventory : MonoBehaviour
                 Debug.Log(itemSelection + " removed");
             }
             
+        }
+           
+
+        if (Input.GetKeyDown(KeyCode.Escape)){
+            pauseMenu.Pause();
         }
 
         // check if there is flashlight in your hand
@@ -278,4 +304,5 @@ public class Inventory : MonoBehaviour
         
 
     }
+
 }
